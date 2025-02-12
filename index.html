@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Be My Valentine?</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,43 +57,59 @@
             color: black;
             position: absolute;
         }
+        .label {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #ff4d4d;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Will you be my Valentine? 💖</h1>
         <div class="buttons">
-            <button class="yes" onclick="showLove()">Yes</button>
-            <button class="no" onmouseover="moveNoButton()">No</button>
+            <button id="yes" class="yes">Yes</button>
+            <button id="no" class="no">No</button>
         </div>
+        <div class="label"></div>
     </div>
     <script>
-        function showLove() {
-            alert("Yay! You made my day! ❤️🥰");
-        }
-        function moveNoButton() {
-            const yesButton = document.querySelector(".yes");
-            const noButton = document.querySelector(".no");
+        $(document).ready(function () {
+            var yesButton = $("#yes");
+            var noButton = $("#no");
+            var container = $(".container");
             
-            const yesRect = yesButton.getBoundingClientRect();
-            const radius = 150; // Movement radius around Yes button
+            var initialX = yesButton.position().left;
+            var initialY = yesButton.position().top;
+            var moveRadius = 100; // No button moves within this radius around Yes button
             
-            let angle = Math.random() * 2 * Math.PI;
-            let x = yesRect.left + yesRect.width / 2 + radius * Math.cos(angle);
-            let y = yesRect.top + yesRect.height / 2 + radius * Math.sin(angle);
-            
-            // Ensure button stays within the window boundaries
-            const maxX = window.innerWidth - noButton.offsetWidth - 10;
-            const maxY = window.innerHeight - noButton.offsetHeight - 10;
-            
-            if (x < 10) x = 10;
-            if (y < 10) y = 10;
-            if (x > maxX) x = maxX;
-            if (y > maxY) y = maxY;
-            
-            noButton.style.position = "absolute";
-            noButton.style.left = `${x}px`;
-            noButton.style.top = `${y}px`;
+            noButton.css({ top: initialY, left: initialX + 100 });
+
+            noButton.mouseover(function () {
+                var newTop = initialY + getRandomIntInclusive(-moveRadius, moveRadius);
+                var newLeft = initialX + getRandomIntInclusive(-moveRadius, moveRadius);
+
+                // Ensure the button stays inside the container
+                var containerWidth = container.width() - noButton.width();
+                var containerHeight = container.height() - noButton.height();
+
+                newLeft = Math.max(0, Math.min(containerWidth, newLeft));
+                newTop = Math.max(0, Math.min(containerHeight, newTop));
+
+                noButton.css({ top: newTop, left: newLeft, position: "absolute" });
+            });
+
+            yesButton.click(function () {
+                $(".label").replaceWith("<div class='label'>I knew it :3</div>");
+                yesButton.hide();
+                noButton.hide();
+            });
+        });
+
+        function getRandomIntInclusive(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1) + min);
         }
     </script>
 </body>
