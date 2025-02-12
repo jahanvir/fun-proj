@@ -48,14 +48,13 @@
         .yes {
             background-color: #ff4d4d;
             color: white;
+            position: relative;
+            z-index: 10;
         }
         .no {
             background-color: #ccc;
             color: black;
             position: absolute;
-            left: 60%;
-            top: 50%;
-            transform: translate(-50%, -50%);
         }
     </style>
 </head>
@@ -72,18 +71,26 @@
             alert("Yay! You made my day! ❤️🥰");
         }
         function moveNoButton() {
+            const yesButton = document.querySelector(".yes");
             const noButton = document.querySelector(".no");
-            const maxX = window.innerWidth - noButton.offsetWidth - 20;
-            const maxY = window.innerHeight - noButton.offsetHeight - 20;
-            let x = Math.random() * maxX;
-            let y = Math.random() * maxY;
             
-            // Ensure button stays within visible boundaries
+            const yesRect = yesButton.getBoundingClientRect();
+            const radius = 150; // Movement radius around Yes button
+            
+            let angle = Math.random() * 2 * Math.PI;
+            let x = yesRect.left + yesRect.width / 2 + radius * Math.cos(angle);
+            let y = yesRect.top + yesRect.height / 2 + radius * Math.sin(angle);
+            
+            // Ensure button stays within the window boundaries
+            const maxX = window.innerWidth - noButton.offsetWidth - 10;
+            const maxY = window.innerHeight - noButton.offsetHeight - 10;
+            
             if (x < 10) x = 10;
             if (y < 10) y = 10;
             if (x > maxX) x = maxX;
             if (y > maxY) y = maxY;
             
+            noButton.style.position = "absolute";
             noButton.style.left = `${x}px`;
             noButton.style.top = `${y}px`;
         }
