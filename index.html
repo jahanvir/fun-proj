@@ -16,6 +16,7 @@
             height: 100vh;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
         .container {
             background: white;
@@ -53,6 +54,9 @@
             background-color: #ccc;
             color: black;
             position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>
@@ -70,10 +74,19 @@
         }
         function moveNoButton() {
             const noButton = document.querySelector(".no");
+            const container = document.querySelector(".container");
             const maxX = window.innerWidth - noButton.offsetWidth - 20;
             const maxY = window.innerHeight - noButton.offsetHeight - 20;
-            const x = Math.random() * maxX;
-            const y = Math.random() * maxY;
+            let x = Math.random() * maxX;
+            let y = Math.random() * maxY;
+            
+            // Prevent the button from going outside the container
+            const containerRect = container.getBoundingClientRect();
+            if (x < containerRect.left) x = containerRect.left;
+            if (y < containerRect.top) y = containerRect.top;
+            if (x + noButton.offsetWidth > window.innerWidth) x = window.innerWidth - noButton.offsetWidth - 20;
+            if (y + noButton.offsetHeight > window.innerHeight) y = window.innerHeight - noButton.offsetHeight - 20;
+            
             noButton.style.left = `${x}px`;
             noButton.style.top = `${y}px`;
         }
